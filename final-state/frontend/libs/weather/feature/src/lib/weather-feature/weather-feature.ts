@@ -3,16 +3,17 @@ import {
   Component,
   inject,
   Signal,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { WeatherService } from '@web/weather-data-access';
-import { map, tap } from 'rxjs';
+import { catchError, EMPTY, map, tap, timeout } from 'rxjs';
 import { WeatherStore } from '../weather-store';
 
 /**
  * Stream view — the Angular replacement for the JavaFX `PrimaryController` /
- * `primary.fxml`. Spec requirements R6–R9, R11, R15.
+ * `primary.fxml`. Spec requirements R6–R9, R11, R15, R16.
  *
  * Public surface (what the tests target):
  *  - injects `WeatherService` (the SSE source) and `WeatherStore` (R9 carrier);
@@ -41,6 +42,9 @@ export class WeatherFeature {
   protected readonly weatherService = inject(WeatherService);
   protected readonly store = inject(WeatherStore);
 
+  /** Message shown after the stream fails, or null while it's healthy (R16). */
+  readonly error = signal<string | null>(null);
+
   /**
    * Latest forecast, or null until the first SSE event (R6/R7).
    *
@@ -55,6 +59,17 @@ export class WeatherFeature {
     this.weatherService.forecast$().pipe(
       tap((weather) => this.store.lastForecast.set(weather.forecast)),
       map((weather) => weather.forecast),
+      // R16: the server sends an event every 1.5 s, so 10 s of silence means the
+      // stream is gone even if a proxy holds the connection open.
+      timeout({ each: 10_000 }),
+      // R16: show the failure and keep the last forecast. No auto-retry, like
+      // the original; reloading or re-entering the view opens a new stream.
+      catchError(() => {
+        this.error.set(
+          'Lost the connection to the forecast server. Reload the page to reconnect.',
+        );
+        return EMPTY;
+      }),
       takeUntilDestroyed(),
     ),
     { initialValue: null },

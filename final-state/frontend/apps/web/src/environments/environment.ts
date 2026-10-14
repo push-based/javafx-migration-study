@@ -3,9 +3,8 @@
  * injection token (frontend/libs/shared/util) in app.config.ts.
  *
  * Empty string = same-origin: in dev the dev-server proxy (proxy.conf.json)
- * forwards `/musiccategories` and `/weather` to :8080, sidestepping CORS. A
- * deployed build that targets a different origin would set a real URL here (and
- * the Spring servers would then need CORS) — deferred until a hosting decision
+ * forwards the API paths to :8080, and the production build is served through
+ * `server.mjs`, which does the same. The Spring servers therefore need no CORS
  * (see `docs/specs/music.md` §8, OD-6).
  */
 export const environment = {

@@ -7,6 +7,10 @@
     }
   </p>
 
+  @if (error(); as message) {
+    <p class="error" role="alert" data-testid="stream-error">{{ message }}</p>
+  }
+
   <a class="nav" routerLink="latest" data-testid="to-snapshot"
     >Get Current Forecast</a
   >

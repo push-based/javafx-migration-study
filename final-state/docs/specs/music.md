@@ -387,7 +387,7 @@ acceptance criterion above (R1↔AC1 … R22↔AC22, plus R5b↔AC5b).
 
 - No change to the Spring REST backends or the `/musiccategories` contract. The 201/500/404/empty-body
   behaviors above are **recorded as found**, not altered.
-- No deployed CORS work in this migration (dev proxy suffices) — see §8.
+- No CORS configuration on the Spring servers: the app calls them on its own origin — see §8.
 - No in-feature view navigation (the desktop app was one `Scene`); `/music` is a single routed view.
 - No port of the dead `getMusicCategory(id)` method or its broken URI (§4 discrepancy 3).
 
@@ -433,8 +433,9 @@ These items were left open when the spec was written. Each one ends with the out
   deployed build against a different origin needs real CORS on the Spring server. **Do not** alter the
   seam to work around it.
 
-  **Outcome:** still open. The migration ran against the dev proxy only; CORS waits for a hosting
-  decision.
+  **Outcome:** same origin, so no CORS. `nx serve-static web` serves the production build through
+  `frontend/apps/web/server.mjs`, which forwards `/musiccategories` to the server the way the dev
+  proxy does. The seam is unchanged.
 
 ---
 

@@ -122,6 +122,12 @@ the source for exactly one acceptance criterion in §6. Evidence cites the JavaF
   the feature is AXE-clean / WCAG AA. *(New requirement for the web port — no FXML equivalent;
   required by the workspace's WCAG AA rule.)*
 
+- **R16 — Show a stream error.** When the stream errors (R4), or no event arrives for 10 seconds,
+  the stream view closes the stream, shows a short, non-blocking message in a `role="alert"` region,
+  keeps the last forecast on screen, and doesn't retry. The server sends an event every 1.5 seconds,
+  so 10 seconds of silence means the stream is gone, even when a proxy holds the connection open. *(The original only logged the error — `PrimaryController.java:52-56` — so a desktop user
+  saw a forecast that silently stopped changing. New requirement for the web port.)*
+
 ---
 
 ## 3. Angular shape
@@ -243,16 +249,19 @@ optional) to drive R1–R4.
   feature styles; brand tokens/variables are used for background, heading, and body.
 - **AC15 (R15, e)** — the forecast region carries `aria-live="polite"`; an AXE scan of the stream and
   snapshot views reports no violations.
+- **AC16 (R16, u)** — after one forecast, an error from the mocked service shows a message in a
+  `role="alert"` element, and the forecast region still shows that forecast. With no event for 10
+  seconds, the message appears and the subscription closes.
 
 Coverage check: the §2 requirements list is testable and **every** requirement has a paired
-acceptance criterion above (R1↔AC1 … R15↔AC15).
+acceptance criterion above (R1↔AC1 … R16↔AC16).
 
 ---
 
 ## 7. Out of scope / non-goals
 
 - No change to the Spring `backend/weather-service` logic or the SSE contract.
-- No deployed CORS work in this migration (dev proxy suffices) — see §8.
+- No CORS configuration on the Spring servers: the app calls them on its own origin — see §8.
 
 ---
 
@@ -277,8 +286,8 @@ These items were left open when the spec was written. Each one ends with the out
   channel. How the UI presents a stream error (silent + console like the original's logger; inline
   message; a retry control) is unspecified by the original (it only logged).
 
-  **Outcome:** no error message in the UI and no auto-retry. A stream error stops the live updates,
-  and Angular's error handler logs it to the console. This matches the original, which only logged it.
+  **Outcome:** an inline message in a `role="alert"` region (R16). The last forecast stays on screen,
+  and there's no auto-retry, which matches the original's non-recovering behavior.
 
 - **`[open]` — Snapshot route path name.** `latest` was `[proposed]`. The alternatives were `snapshot`
   or a non-routed in-component view toggle, which is closer to the single-`Scene` original but weakens
@@ -290,8 +299,9 @@ These items were left open when the spec was written. Each one ends with the out
   at a different origin needs real CORS on `backend/weather-service`. **Do not** alter the seam to work
   around it.
 
-  **Outcome:** still open. The migration ran against the dev proxy only; CORS waits for a hosting
-  decision.
+  **Outcome:** same origin, so no CORS. `nx serve-static web` serves the production build through
+  `frontend/apps/web/server.mjs`, which forwards `/weather/forecast` to the server the way the dev
+  proxy does. The seam is unchanged.
 
 ---
 

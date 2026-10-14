@@ -83,12 +83,10 @@
     },
     "serve-static": {
       "continuous": true,
-      "executor": "@nx/web:file-server",
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "web:build",
-        "port": 4200,
-        "staticFilePath": "dist/frontend/apps/web/browser",
-        "spa": true
+        "command": "node frontend/apps/web/server.mjs dist/frontend/apps/web/browser"
       }
     }
   }

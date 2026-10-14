@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 /**
@@ -5,9 +6,9 @@ import { expect, test } from '@playwright/test';
  * AC12–AC14, AC20, AC22). Both JavaFX clients collapse onto this one feature.
  *
  * Backend: these run against **rest-h2** on :8080 (OD-1) — in-memory, auto-seeded
- * with 8 categories, zero setup — reached through the dev proxy
- * (`/musiccategories` → :8080). The AXE flow stays a `test.fixme` skeleton
- * because `@axe-core/playwright` isn't installed.
+ * with 8 categories, zero setup — reached through the proxy
+ * (`/musiccategories` → :8080). The AXE flow scans the view for WCAG 2.1 A and
+ * AA violations.
  *
  * Shared-backend robustness (D5): `playwright.config.mts` runs THREE projects
  * (chromium/firefox/webkit) in parallel against the SAME non-reset rest-h2
@@ -116,8 +117,15 @@ test.describe('music feature', () => {
   });
 
   // --- AC22 (R22): AXE-clean ------------------------------------------------
-  test.fixme('the music view is AXE-clean', async () => {
-    // Not automated: needs @axe-core/playwright to assert zero violations on /music.
-    expect(true).toBe(true);
+  test('the music view is AXE-clean', async ({ page }) => {
+    await page.goto('/music');
+    await expect(
+      page.getByRole('cell', { name: 'Classical', exact: true }),
+    ).toBeVisible();
+
+    const { violations } = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+    expect(violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
   });
 });

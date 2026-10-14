@@ -44,8 +44,12 @@ The migration replaced only the presentation layer:
   asynchronous, so both became one screen and the delay was dropped.
 - Scene swapping became Angular routes that load lazily and work as deep links: `/music`, `/weather`,
   and `/weather/latest`.
-- The hardcoded `http://localhost:8080` became an `API_BASE_URL` injection token. In development, the
-  Angular dev server proxies API calls to port 8080.
+- The hardcoded `http://localhost:8080` became an `API_BASE_URL` injection token. The app calls the
+  API on its own origin: in development, the Angular dev server forwards the calls to port 8080, and
+  in production, a small Node.js server does the same. The browser makes no cross-origin calls, so the
+  Spring servers need no CORS configuration.
+- The Weather screen shows a message when the stream fails or sends nothing for 10 seconds. The
+  original client only logged the error, so its forecast stopped changing without notice.
 - Separate Maven builds became one Nx workspace that builds, tests, and serves both the Angular app
   and the Maven servers.
 
@@ -56,7 +60,7 @@ project.
 
 The migrated project in `final-state/` has the following parts:
 
-- `frontend/apps/web`: the Angular app.
+- `frontend/apps/web`: the Angular app, and `server.mjs`, which serves the production build.
 - `frontend/apps/web-e2e`: the Playwright end-to-end tests.
 - `frontend/libs/music` and `frontend/libs/weather`: one `feature` library (screens) and one
   `data-access` library (HTTP and SSE clients) per area.
@@ -79,16 +83,8 @@ Each screen went through the same four steps:
    passing unit tests didn't show. Section 10 of the Music spec lists them, and each has a regression
    test.
 
-The Angular projects pass 78 unit tests and 8 end-to-end tests, run in Chromium, Firefox, and WebKit.
-
-The following gaps remain:
-
-- The 2 automated accessibility scans are marked `test.fixme` because `@axe-core/playwright` isn't
-  installed.
-- The servers have no CORS configuration. The app reaches them through the dev-server proxy, so a
-  deployment on another origin needs CORS on the servers.
-- The Weather screen doesn't show stream errors in the UI. Like the original client, it stops
-  updating and logs the error.
+The Angular projects pass 80 unit tests and 10 end-to-end tests, run in Chromium, Firefox, and
+WebKit. Two of the end-to-end tests use axe to scan all 3 views for WCAG 2.1 A and AA violations.
 
 ## Run the app
 
@@ -119,6 +115,18 @@ don't need to install Maven. All servers use port 8080, so run one at a time.
 
 4. In a browser, open `http://localhost:4200/music` or `http://localhost:4200/weather`.
 
+To run the production build instead, replace `npx nx serve web` in step 3 with the following
+command. It builds the app and serves it on port 4200 through `frontend/apps/web/server.mjs`, which
+forwards the API paths to port 8080 on the same origin.
+
+```bash
+npx nx serve-static web
+```
+
+To change the port or the API address, set the `PORT` and `API_URL` environment variables. For a real
+deployment, any reverse proxy that forwards `/musiccategories` and `/weather/forecast` the same way,
+such as nginx, does the same job, and the Spring servers still need no CORS configuration.
+
 The `rest-mysql` server serves the same API from MySQL. It needs a MySQL database loaded from
 `backend/rest-mysql/Music.sql`, with the credentials in its `application.properties` file.
 
@@ -131,8 +139,9 @@ To run the unit tests, lint, and builds for the Angular projects, run the follow
 npx nx run-many -t lint,test,build --exclude=rest-h2,rest-mysql,weather-service
 ```
 
-The end-to-end tests need the matching server on port 8080. Playwright starts the app on port 4200 if
-it isn't running. To run the Music tests with `rest-h2` running, use the following command. With
+The end-to-end tests, including the accessibility scans, need the matching server on port 8080.
+Playwright starts the app on port 4200 if it isn't running. To test the production build, start
+`npx nx serve-static web` first. To run the Music tests with `rest-h2` running, use the following command. With
 `weather-service` running, replace `music` with `weather`.
 
 ```bash

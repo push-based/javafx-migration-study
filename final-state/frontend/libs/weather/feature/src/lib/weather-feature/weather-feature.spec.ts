@@ -11,7 +11,7 @@ interface Weather {
 
 /**
  * Tests for the stream view (`WeatherFeature`). Source of truth: weather spec
- * R6–R9, R11, R12, R15 / AC6–AC9, AC12, AC15.
+ * R6–R9, R11, R12, R15, R16 / AC6–AC9, AC12, AC15, AC16.
  *
  * `WeatherService` is mocked with a controllable `Subject<Weather>` so a test
  * can push forecasts and assert the live region updates, and can detect
@@ -120,7 +120,9 @@ describe('WeatherFeature (stream view)', () => {
     const forecasts = new Subject<Weather>();
     const { fixture, store } = mountStreamView(forecasts);
 
-    forecasts.next({ forecast: 'Rain is on the way. Don’t forget your umbrella.' });
+    forecasts.next({
+      forecast: 'Rain is on the way. Don’t forget your umbrella.',
+    });
     fixture.detectChanges();
 
     expect(store.lastForecast()).toBe(
@@ -147,6 +149,49 @@ describe('WeatherFeature (stream view)', () => {
       '[data-testid="forecast"]',
     ) as HTMLElement;
     expect(region.getAttribute('aria-live')).toBe('polite');
+  });
+
+  // --- R16 / AC16: a stream error is shown, the last forecast stays ---------
+  it('AC16 (R16): shows a stream error in an alert and keeps the last forecast', () => {
+    const forecasts = new Subject<Weather>();
+    const { fixture, regionText } = mountStreamView(forecasts);
+    const alert = () =>
+      fixture.nativeElement.querySelector(
+        '[role="alert"]',
+      ) as HTMLElement | null;
+
+    forecasts.next({ forecast: 'Hot and sunny. Bring your sunscreen.' });
+    fixture.detectChanges();
+    expect(alert()).toBeNull();
+
+    forecasts.error(new Event('error'));
+    fixture.detectChanges();
+    expect(alert()?.textContent?.trim()).toBeTruthy();
+    expect(regionText()).toBe('Hot and sunny. Bring your sunscreen.');
+  });
+
+  // A proxy can hold a dead stream open without an error, so silence counts
+  // too: the server sends an event every 1.5 s.
+  it('AC16 (R16): treats 10 seconds without an event as a lost stream', () => {
+    jest.useFakeTimers();
+    try {
+      const forecasts = new Subject<Weather>();
+      const view = mountStreamView(forecasts);
+      const alert = () =>
+        view.fixture.nativeElement.querySelector('[role="alert"]');
+
+      forecasts.next({ forecast: 'Hot and sunny. Bring your sunscreen.' });
+      jest.advanceTimersByTime(9_000);
+      view.fixture.detectChanges();
+      expect(alert()).toBeNull();
+
+      jest.advanceTimersByTime(1_000);
+      view.fixture.detectChanges();
+      expect(alert()).not.toBeNull();
+      expect(view.teardowns).toBe(1); // The EventSource closes.
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   // --- R11 / AC11 (unit slice): a control to reach the snapshot exists -------

@@ -1,13 +1,13 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 /**
  * E2E flows for the weather migration (spec R11/R13/R15, AC9/AC11/AC13/AC15).
  *
- * The four functional flows encode the user-visible behavior the JavaFX client
- * guaranteed and run against the real feature with the backend SSE seam
- * reachable through the dev proxy (`/weather/forecast` → :8080), so they need
- * `backend/weather-service` running. The AXE flow stays `test.fixme` because
- * `@axe-core/playwright` isn't installed.
+ * The flows encode the user-visible behavior the JavaFX client guaranteed and
+ * run against the real feature with the backend SSE seam reachable through the
+ * proxy (`/weather/forecast` → :8080), so they need `backend/weather-service`
+ * running. The AXE flow scans both views for WCAG 2.1 A and AA violations.
  */
 test.describe('weather feature', () => {
   // --- AC13 (R13): deep-link + lazy load ------------------------------------
@@ -67,9 +67,22 @@ test.describe('weather feature', () => {
   });
 
   // --- AC15 (R15): AXE-clean on both views ----------------------------------
-  test.fixme('stream and snapshot views are AXE-clean', async () => {
-    // Not automated: needs @axe-core/playwright to assert zero violations on
-    // /weather and /weather/latest.
-    expect(true).toBe(true);
+  test('stream and snapshot views are AXE-clean', async ({ page }) => {
+    const scan = async () =>
+      (
+        await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+          .analyze()
+      ).violations.map((v) => `${v.id}: ${v.help}`);
+
+    await page.goto('/weather');
+    await expect(page.getByTestId('forecast')).not.toHaveText('', {
+      timeout: 3000,
+    });
+    expect(await scan()).toEqual([]);
+
+    await page.getByTestId('to-snapshot').click();
+    await expect(page).toHaveURL(/\/weather\/latest$/);
+    expect(await scan()).toEqual([]);
   });
 });
