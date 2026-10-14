@@ -1,0 +1,121 @@
+// Brand tokens only (R21). The original view.fxml demo
+// background and DropShadow were placeholder styling, NOT brand, and are
+// deliberately not carried over. The AC21 guardrail scan asserts no non-brand
+// color literal from the old FXML ever appears in this file.
+:host {
+  display: block;
+  background: var(--surface-page);
+  color: var(--color-text);
+}
+
+.music {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+  h1 {
+    margin: 0;
+    color: var(--color-ink);
+  }
+}
+
+.categories {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  thead th {
+    background: var(--surface-2);
+    color: var(--color-ink);
+  }
+
+  tbody tr {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-1);
+    }
+
+    // Keyboard-focusable rows (D3): a visible focus ring for keyboard users.
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: -2px;
+    }
+
+    &.selected {
+      background: var(--surface-purple);
+    }
+  }
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  input {
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    color: var(--color-text);
+    background: var(--surface-page);
+
+    &:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 1px;
+      border-color: var(--color-primary);
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    font: inherit;
+    cursor: pointer;
+
+    // Primary actions (New / Update) — brand purple.
+    background: var(--color-primary);
+    color: var(--surface-page);
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    // Delete — the one legitimate sparing use of the accent (R21).
+    &.destructive {
+      background: var(--color-accent);
+    }
+  }
+}
+
+.status {
+  min-height: 1.25rem;
+  margin: 0;
+  color: var(--color-text-muted);
+
+  .error {
+    color: var(--color-accent);
+  }
+}

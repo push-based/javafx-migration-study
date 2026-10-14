@@ -1,0 +1,33 @@
+// Brand-token spinner. No demo color literals.
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+.spinner__dot {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--surface-2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spinner-rotate 0.8s linear infinite;
+}
+
+.spinner__label {
+  color: var(--color-text-muted);
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Respect reduced-motion preferences (WCAG).
+@media (prefers-reduced-motion: reduce) {
+  .spinner__dot {
+    animation: none;
+  }
+}

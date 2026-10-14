@@ -1,0 +1,21 @@
+{
+  "name": "music-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "frontend/libs/music/data-access/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:music", "type:data-access"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "frontend/libs/music/data-access/jest.config.cts",
+        "tsConfig": "frontend/libs/music/data-access/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

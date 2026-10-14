@@ -1,0 +1,30 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@web/music-data-access": [
+        "./frontend/libs/music/data-access/src/index.ts"
+      ],
+      "@web/music-feature": ["./frontend/libs/music/feature/src/index.ts"],
+      "@web/weather-data-access": [
+        "./frontend/libs/weather/data-access/src/index.ts"
+      ],
+      "@web/weather-feature": ["./frontend/libs/weather/feature/src/index.ts"],
+      "@web/shared-ui": ["./frontend/libs/shared/ui/src/index.ts"],
+      "@web/shared-util": ["./frontend/libs/shared/util/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

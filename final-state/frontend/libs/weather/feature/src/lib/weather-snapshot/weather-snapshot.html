@@ -1,0 +1,11 @@
+<section class="weather-snapshot">
+  <h1>Latest Forecast:</h1>
+
+  <p class="forecast" data-testid="snapshot-forecast">
+    @if (forecast(); as current) {
+      {{ current }}
+    }
+  </p>
+
+  <a class="nav" routerLink="../" data-testid="to-stream">Back to Forecast</a>
+</section>

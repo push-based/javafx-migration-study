@@ -1,0 +1,13 @@
+<section class="weather-stream">
+  <h1>My Weather Forecast</h1>
+
+  <p class="forecast" aria-live="polite" data-testid="forecast">
+    @if (forecast(); as current) {
+      {{ current }}
+    }
+  </p>
+
+  <a class="nav" routerLink="latest" data-testid="to-snapshot"
+    >Get Current Forecast</a
+  >
+</section>

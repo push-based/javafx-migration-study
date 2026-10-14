@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--color-text);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-brand {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.app-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.app-nav a {
+  text-decoration: none;
+  color: var(--color-primary);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+
+.app-nav a:hover,
+.app-nav a:focus-visible {
+  background: var(--surface-2);
+}
+
+.app-nav a.active {
+  background: var(--surface-purple);
+  font-weight: 600;
+}
+
+.app-main {
+  padding: 1.5rem;
+}

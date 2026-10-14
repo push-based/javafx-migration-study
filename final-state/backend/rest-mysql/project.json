@@ -1,0 +1,44 @@
+{
+  "name": "rest-mysql",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "backend/rest-mysql/src",
+  "tags": ["scope:backend", "type:app"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/pom.xml"],
+      "outputs": ["{projectRoot}/target"],
+      "options": {
+        "command": "./mvnw -B -ntp -DskipTests package",
+        "cwd": "backend/rest-mysql"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/pom.xml"],
+      "outputs": ["{projectRoot}/target/surefire-reports"],
+      "options": {
+        "command": "./mvnw -B -ntp test",
+        "cwd": "backend/rest-mysql"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "./mvnw -B -ntp spring-boot:run",
+        "cwd": "backend/rest-mysql"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./mvnw -B -ntp clean",
+        "cwd": "backend/rest-mysql"
+      }
+    }
+  }
+}

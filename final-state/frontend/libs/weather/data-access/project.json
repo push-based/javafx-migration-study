@@ -1,0 +1,21 @@
+{
+  "name": "weather-data-access",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "frontend/libs/weather/data-access/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:weather", "type:data-access"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "frontend/libs/weather/data-access/jest.config.cts",
+        "tsConfig": "frontend/libs/weather/data-access/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "weather-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "frontend/libs/weather/feature/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:weather", "type:feature"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "frontend/libs/weather/feature/jest.config.cts",
+        "tsConfig": "frontend/libs/weather/feature/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

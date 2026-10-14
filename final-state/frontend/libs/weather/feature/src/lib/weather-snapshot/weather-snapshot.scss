@@ -1,0 +1,23 @@
+// Snapshot view styles — brand tokens only (spec R14 / AC14).
+// The FXML `moccasin` background was a placeholder demo color, NOT brand, and
+// is deliberately dropped.
+.weather-snapshot {
+  background: var(--surface-page);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  h1 {
+    color: var(--color-ink);
+  }
+
+  .forecast {
+    color: var(--color-text);
+  }
+
+  .nav {
+    color: var(--color-primary);
+  }
+}

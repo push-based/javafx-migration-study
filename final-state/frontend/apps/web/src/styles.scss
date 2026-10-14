@@ -1,0 +1,46 @@
+/* Global styles and brand tokens. */
+:root {
+  /* Brand — purple */
+  --color-primary: #6938ef; /* headings, accents, primary button, focus */
+  --color-primary-200: #8b70f7; /* lighter — on dark/gradient only */
+  --color-primary-100: #a48bfd; /* lightest — on dark/gradient only */
+
+  /* Accent — use sparingly (destructive / out-of-scope) */
+  --color-accent: #de0b5f;
+
+  /* Text (on light) */
+  --color-ink: #121926; /* strongest — page titles */
+  --color-text: #364152; /* body */
+  --color-text-muted: #5f6b7a;
+  --color-text-muted-2: #697586;
+
+  /* Surfaces & borders (light) */
+  --surface-page: #fcfcfd; /* page background */
+  --surface-1: #f8fafc;
+  --surface-2: #eef2f6;
+  --border: #e3e8ef;
+  --surface-purple: #f1ecfe; /* soft purple tinted surface */
+
+  /* Dark */
+  --background-dark: #0d131c;
+
+  /* Gradient (title / closing) */
+  --gradient-title: linear-gradient(135deg, #3a0f73 0%, #6a1a86 50%, #b23a7c 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  background: var(--surface-page);
+  color: var(--color-text);
+}

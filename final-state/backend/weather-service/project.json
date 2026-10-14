@@ -1,0 +1,44 @@
+{
+  "name": "weather-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "backend/weather-service/src",
+  "tags": ["scope:backend", "type:app"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/pom.xml"],
+      "outputs": ["{projectRoot}/target"],
+      "options": {
+        "command": "./mvnw -B -ntp -DskipTests package",
+        "cwd": "backend/weather-service"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/pom.xml"],
+      "outputs": ["{projectRoot}/target/surefire-reports"],
+      "options": {
+        "command": "./mvnw -B -ntp test",
+        "cwd": "backend/weather-service"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "./mvnw -B -ntp spring-boot:run",
+        "cwd": "backend/weather-service"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "./mvnw -B -ntp clean",
+        "cwd": "backend/weather-service"
+      }
+    }
+  }
+}

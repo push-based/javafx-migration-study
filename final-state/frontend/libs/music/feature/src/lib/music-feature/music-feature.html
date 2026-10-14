@@ -1,0 +1,87 @@
+<section class="music">
+  <h1>Music Categories</h1>
+
+  @if (loading()) {
+    <!--
+      aria-hidden: the spinner host is itself role="status" aria-live="polite";
+      the status <p> below is the single announcing live region (D4), so the
+      spinner is visual-only here to avoid double-narrating each operation.
+    -->
+    <lib-spinner
+      class="spinner"
+      data-testid="loading"
+      label="Loading…"
+      aria-hidden="true"
+    />
+  }
+
+  <table class="categories">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (category of categories(); track category.musicCategoryId) {
+        <tr
+          data-testid="category-row"
+          tabindex="0"
+          [class.selected]="selected()?.musicCategoryId === category.musicCategoryId"
+          (click)="select(category)"
+          (keydown.enter)="select(category)"
+          (keydown.space)="selectFromKey($event, category)"
+        >
+          <td>{{ category.musicCategoryId }}</td>
+          <td>{{ category.musicCategory }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <form class="editor" [formGroup]="form">
+    <label for="category-name">Category Name</label>
+    <input
+      id="category-name"
+      type="text"
+      formControlName="categoryName"
+      data-testid="category-name"
+    />
+
+    <div class="actions">
+      <button
+        type="button"
+        data-testid="create"
+        [disabled]="!canCreate()"
+        (click)="createCategory()"
+      >
+        New
+      </button>
+      <button
+        type="button"
+        data-testid="update"
+        [disabled]="!canUpdate()"
+        (click)="updateCategory()"
+      >
+        Update
+      </button>
+      <button
+        type="button"
+        class="destructive"
+        data-testid="delete"
+        [disabled]="!canDelete()"
+        (click)="deleteCategory()"
+      >
+        Delete
+      </button>
+    </div>
+  </form>
+
+  <p class="status" aria-live="polite" data-testid="status">
+    @if (error()) {
+      <span class="error" data-testid="error">{{ error() }}</span>
+    } @else {
+      {{ message() }}
+    }
+  </p>
+</section>

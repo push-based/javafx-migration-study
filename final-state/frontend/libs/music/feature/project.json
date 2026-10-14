@@ -1,0 +1,21 @@
+{
+  "name": "music-feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "frontend/libs/music/feature/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:music", "type:feature"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "frontend/libs/music/feature/jest.config.cts",
+        "tsConfig": "frontend/libs/music/feature/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
